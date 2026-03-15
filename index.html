@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kos Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .payment-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .payment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .payment-item.lunas {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+
+        .payment-item.pending {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+
+        .room-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .room-amount {
+            color: #666;
+        }
+
+        .status {
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+
+        .status.lunas {
+            background: #28a745;
+            color: white;
+        }
+
+        .status.pending {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .rooms-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .rooms-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .room-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 12px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+
+        .room-card:hover {
+            transform: translateX(5px);
+        }
+
+        .room-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .room-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        .room-details h3 {
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .room-details p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .checkbox-container label {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .empty-rooms {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .empty-rooms h3 {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .empty-room {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: #e9ecef;
+            border-radius: 8px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .total-revenue {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #eee;
+            text-align: right;
+        }
+
+        .total-revenue p {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .total-revenue strong {
+            color: #333;
+            font-size: 1.3em;
+        }
+
+        .action-buttons {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-save {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .payment-item,
+            .room-card,
+            .empty-room {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .checkbox-container {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 Kos Manager</h1>
+
+        <!-- Pembayaran -->
+        <div class="payment-section">
+            <h2>💰 Pembayaran</h2>
+            <div id="paymentList">
+                <!-- Akan diisi oleh JavaScript -->
+            </div>
+        </div>
+
+        <!-- Daftar Ruangan -->
+        <div class="rooms-section">
+            <h2>🚪 Daftar Ruangan</h2>
+            <div id="roomList">
+                <!-- Akan diisi oleh JavaScript -->
+            </div>
+
+            <!-- Ruangan Kosong -->
+            <div class="empty-rooms" id="emptyRooms">
+                <h3>📭 Ruangan Kosong</h3>
+                <div id="emptyRoomList">
+                    <!-- Akan diisi oleh JavaScript -->
+                </div>
+            </div>
+
+            <!-- Total Pendapatan -->
+            <div class="total-revenue">
+                <p>Total Pendapatan: <strong id="totalRevenue">Rp 950.000</strong></p>
+            </div>
+
+            <!-- Tombol -->
+            <div class="action-buttons">
+                <button class="btn btn-save" onclick="saveData()">💾 Simpan</button>
+                <button class="btn btn-reset" onclick="resetData()">🔄 Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data awal
+        const initialRooms = [
+            { id: 1, number: 'A1', name: 'Kamar Satu', price: 500000, occupied: true },
+            { id: 2, number: 'B2', name: 'Kamar Dua', price: 450000, occupied: true },
+            { id: 3, number: 'C1', name: 'Kamar Tiga', price: 500000, occupied: false },
+            { id: 4, number: 'C2', name: 'Kamar Empat', price: 500000, occupied: false },
+            { id: 5, number: 'D3', name: 'Kamar Lima', price: 450000, occupied: false }
+        ];
+
+        // Load data dari localStorage atau gunakan data awal
+        let rooms = JSON.parse(localStorage.getItem('kosRooms')) || initialRooms;
+
+        // Format rupiah
+        function formatRupiah(amount) {
+            return 'Rp ' + amount.toLocaleString('id-ID');
+        }
+
+        // Render pembayaran (yang sudah bayar)
+        function renderPayments() {
+            const paymentList = document.getElementById('paymentList');
+            const paidRooms = rooms.filter(room => room.occupied);
+
+            if (paidRooms.length === 0) {
+                paymentList.innerHTML = '<p style="color: #666; font-style: italic;">Belum ada pembayaran</p>';
+                return;
+            }
+
+            paymentList.innerHTML = paidRooms.map(room => `
+                <div class="payment-item lunas">
+                    <span class="room-name">${room.number} - ${room.name}</span>
+                    <span class="room-amount">${formatRupiah(room.price)}</span>
+                    <span class="status lunas">✓ LUNAS</span>
+                </div>
+            `).join('');
+        }
+
+        // Render daftar ruangan
+        function renderRooms() {
+            const roomList = document.getElementById('roomList');
+            const occupiedRooms = rooms.filter(room => room.occupied);
+
+            roomList.innerHTML = occupiedRooms.map(room => `
+                <div class="room-card">
+                    <div class="room-info">
+                        <div class="room-number">${room.number}</div>
+                        <div class="room-details">
+                            <h3>${room.name}</h3>
+                            <p>${formatRupiah(room.price)}</p>
+                        </div>
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="room-${room.id}" ${room.occupied ? 'checked' : ''} onchange="toggleRoom(${room.id})">
+                        <label for="room-${room.id}">Isi</label>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render ruangan kosong
+        function renderEmptyRooms() {
+            const emptyRoomList = document.getElementById('emptyRoomList');
+            const emptyRooms = rooms.filter(room => !room.occupied);
+
+            if (emptyRooms.length === 0) {
+                emptyRoomList.innerHTML = '<p style="color: #666; font-style: italic;">Tidak ada ruangan kosong</p>';
+                return;
+            }
+
+            emptyRoomList.innerHTML = emptyRooms.map(room => `
+                <div class="empty-room">
+                    <span>${room.number} - ${room.name}</span>
+                    <span>${formatRupiah(room.price)}</span>
+                </div>
+            `).join('');
+        }
+
+        // Update total pendapatan
+        function updateTotalRevenue() {
+            const total = rooms
+                .filter(room => room.occupied)
+                .reduce((sum, room) => sum + room.price, 0);
+            document.getElementById('totalRevenue').textContent = formatRupiah(total);
+        }
+
+        // Toggle status isi/kosong
+        function toggleRoom(roomId) {
+            const room = rooms.find(r => r.id === roomId);
+            if (room) {
+                room.occupied = !room.occupied;
+            }
+        }
+
+        // Simpan data
+        function saveData() {
+            localStorage.setItem('kosRooms', JSON.stringify(rooms));
+            renderPayments();
+            renderRooms();
+            renderEmptyRooms();
+            updateTotalRevenue();
+
+            // Tampilkan notifikasi sederhana
+            alert('✓ Data berhasil disimpan!');
+        }
+
+        // Reset data
+        function resetData() {
+            if (confirm('Yakin ingin mereset semua data?')) {
+                localStorage.removeItem('kosRooms');
+                rooms = JSON.parse(localStorage.getItem('kosRooms')) || initialRooms;
+                renderPayments();
+                renderRooms();
+                renderEmptyRooms();
+                updateTotalRevenue();
+                alert('✓ Data berhasil di-reset!');
+            }
+        }
+
+        // Render awal
+        renderPayments();
+        renderRooms();
+        renderEmptyRooms();
+        updateTotalRevenue();
+    </script>
+</body>
+</html>
