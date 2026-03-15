@@ -314,11 +314,11 @@
     <script>
         // Data awal
         const initialRooms = [
-            { id: 1, number: 'A1', name: 'Kamar Satu', price: 500000, occupied: true },
-            { id: 2, number: 'B2', name: 'Kamar Dua', price: 450000, occupied: true },
-            { id: 3, number: 'C1', name: 'Kamar Tiga', price: 500000, occupied: false },
-            { id: 4, number: 'C2', name: 'Kamar Empat', price: 500000, occupied: false },
-            { id: 5, number: 'D3', name: 'Kamar Lima', price: 450000, occupied: false }
+            { id: 1, number: 'A1', name: 'Kamar Satu', price: 500000, occupied: true, residentName: '' },
+            { id: 2, number: 'B2', name: 'Kamar Dua', price: 450000, occupied: true, residentName: '' },
+            { id: 3, number: 'C1', name: 'Kamar Tiga', price: 500000, occupied: false, residentName: '' },
+            { id: 4, number: 'C2', name: 'Kamar Empat', price: 500000, occupied: false, residentName: '' },
+            { id: 5, number: 'D3', name: 'Kamar Lima', price: 450000, occupied: false, residentName: '' }
         ];
 
         // Load data dari localStorage atau gunakan data awal
@@ -341,9 +341,14 @@
 
             paymentList.innerHTML = paidRooms.map(room => `
                 <div class="payment-item lunas">
-                    <span class="room-name">${room.number} - ${room.name}</span>
-                    <span class="room-amount">${formatRupiah(room.price)}</span>
-                    <span class="status lunas">✓ LUNAS</span>
+                    <div>
+                        <div class="room-name">${room.number} - ${room.name}</div>
+                        ${room.residentName ? `<div style="font-size: 0.9em; color: #555; margin-top: 4px;">👤 ${room.residentName}</div>` : ''}
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="room-amount">${formatRupiah(room.price)}</span>
+                        <div class="status lunas" style="margin-top: 4px;">✓ LUNAS</div>
+                    </div>
                 </div>
             `).join('');
         }
@@ -362,9 +367,15 @@
                             <p>${formatRupiah(room.price)}</p>
                         </div>
                     </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="room-${room.id}" ${room.occupied ? 'checked' : ''} onchange="toggleRoom(${room.id})">
-                        <label for="room-${room.id}">Isi</label>
+                    <div class="checkbox-container" style="flex-direction: column; align-items: flex-end; gap: 10px;">
+                        <div style="width: 100%; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+                            <label for="room-${room.id}" style="font-weight: 600; min-width: 60px;">Isi:</label>
+                            <input type="checkbox" id="room-${room.id}" ${room.occupied ? 'checked' : ''} onchange="toggleRoom(${room.id})">
+                        </div>
+                        <div style="width: 100%; display: flex; align-items: center; gap: 8px;">
+                            <label for="resident-${room.id}" style="font-weight: 600; min-width: 60px;">Nama:</label>
+                            <input type="text" id="resident-${room.id}" value="${room.residentName || ''}" placeholder="Nama penghuni" style="flex: 1; padding: 8px 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 14px; transition: border-color 0.2s;" oninput="updateResidentName(${room.id}, this.value)">
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -401,6 +412,18 @@
             const room = rooms.find(r => r.id === roomId);
             if (room) {
                 room.occupied = !room.occupied;
+                // Jika menjadi isi, set default residentName kosong jika belum ada
+                if (room.occupied && !room.residentName) {
+                    room.residentName = '';
+                }
+            }
+        }
+
+        // Update nama penghuni
+        function updateResidentName(roomId, name) {
+            const room = rooms.find(r => r.id === roomId);
+            if (room) {
+                room.residentName = name;
             }
         }
 
