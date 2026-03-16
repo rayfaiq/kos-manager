@@ -269,18 +269,6 @@
             margin-bottom: 15px;
         }
 
-        .empty-room {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            margin: 8px 0;
-            background: #e9ecef;
-            border-radius: 8px;
-            color: #6c757d;
-            font-style: italic;
-        }
-
         .total-revenue {
             margin-top: 15px;
             padding-top: 15px;
@@ -765,9 +753,30 @@
             }
 
             emptyRoomList.innerHTML = emptyRooms.map(room => `
-                <div class="empty-room">
-                    <span>${room.number} - ${room.name}</span>
-                    <span>${formatRupiah(room.price)}</span>
+                <div class="room-card">
+                    <div class="room-info">
+                        <div class="room-number">${room.number}</div>
+                        <div class="room-details">
+                            <h3>${room.name}</h3>
+                            <p>${formatRupiah(room.price)}</p>
+                        </div>
+                    </div>
+                    <div class="checkbox-container" style="flex-direction: column; align-items: flex-end; gap: 10px;">
+                        <div class="checkbox-row">
+                            <label for="room-${room.id}">Isi:</label>
+                            <input type="checkbox" id="room-${room.id}" ${room.occupied ? 'checked' : ''} onchange="toggleRoom(${room.id})">
+                        </div>
+                        <div class="input-row" id="resident-input-row-${room.id}" style="display: ${room.occupied ? 'flex' : 'none'}">
+                            <label for="resident-${room.id}">Nama:</label>
+                            <input type="text" id="resident-${room.id}" value="${room.residentName || ''}" placeholder="Nama penghuni" oninput="updateResidentName(${room.id}, this.value)">
+                            <button class="btn-remove-resident" onclick="removeResident(${room.id})" title="Hapus penghuni">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             `).join('');
         }
