@@ -73,6 +73,12 @@
             color: #666;
         }
 
+        .resident-name {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 4px;
+        }
+
         .status {
             font-weight: 700;
             padding: 5px 12px;
@@ -97,10 +103,37 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .rooms-section h2 {
-            color: #333;
+        .rooms-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
+        }
+
+        .rooms-section-header h2 {
+            color: #333;
             font-size: 1.5em;
+            margin: 0;
+        }
+
+        .btn-add {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-add:hover {
+            background: #218838;
+            transform: translateY(-2px);
         }
 
         .room-card {
@@ -137,9 +170,14 @@
             font-size: 1.2em;
         }
 
+        .room-details {
+            flex: 1;
+        }
+
         .room-details h3 {
             color: #333;
             font-size: 1.1em;
+            margin-bottom: 4px;
         }
 
         .room-details p {
@@ -149,20 +187,74 @@
 
         .checkbox-container {
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-end;
             gap: 10px;
         }
 
-        .checkbox-container input[type="checkbox"] {
+        .checkbox-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-row label {
+            font-weight: 600;
+            min-width: 60px;
+        }
+
+        .checkbox-row input[type="checkbox"] {
             width: 22px;
             height: 22px;
             cursor: pointer;
             accent-color: #667eea;
         }
 
-        .checkbox-container label {
+        .input-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-row label {
+            font-weight: 600;
+            min-width: 60px;
+        }
+
+        .input-row input[type="text"] {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .input-row input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-remove-resident {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
             cursor: pointer;
-            user-select: none;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-remove-resident:hover {
+            background: #c82333;
+            transform: scale(1.1);
         }
 
         .empty-rooms {
@@ -243,9 +335,193 @@
             transform: translateY(-2px);
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            color: #333;
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        .btn-close {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-close:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .modal-body .form-group {
+            margin-bottom: 20px;
+        }
+
+        .modal-body .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .modal-body .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .modal-body .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-body .form-group input:required {
+            border-color: #dc3545;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .modal-footer .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-footer .btn-save {
+            background: #28a745;
+            color: white;
+        }
+
+        .modal-footer .btn-save:hover {
+            background: #218838;
+        }
+
+        .modal-footer .btn-cancel {
+            background: #6c757d;
+            color: white;
+        }
+
+        .modal-footer .btn-cancel:hover {
+            background: #5a6268;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            animation: slideInRight 0.3s ease;
+            display: none;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        .toast.success {
+            border-left: 4px solid #28a745;
+        }
+
+        .toast.error {
+            border-left: 4px solid #dc3545;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         @media (max-width: 600px) {
             h1 {
                 font-size: 2em;
+            }
+
+            .rooms-section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .btn-add {
+                width: 100%;
+                justify-content: center;
             }
 
             .payment-item,
@@ -258,7 +534,15 @@
 
             .checkbox-container {
                 width: 100%;
-                justify-content: flex-end;
+                align-items: flex-start;
+            }
+
+            .input-row {
+                width: 100%;
+            }
+
+            .input-row input[type="text"] {
+                width: 100%;
             }
 
             .action-buttons {
@@ -267,6 +551,10 @@
 
             .btn {
                 width: 100%;
+            }
+
+            .modal-content {
+                padding: 20px;
             }
         }
     </style>
@@ -285,7 +573,10 @@
 
         <!-- Daftar Ruangan -->
         <div class="rooms-section">
-            <h2>🚪 Daftar Ruangan</h2>
+            <div class="rooms-section-header">
+                <h2>🚪 Daftar Ruangan</h2>
+                <button class="btn-add" onclick="showAddRoomModal()">+ Tambah Kamar</button>
+            </div>
             <div id="roomList">
                 <!-- Akan diisi oleh JavaScript -->
             </div>
@@ -300,7 +591,7 @@
 
             <!-- Total Pendapatan -->
             <div class="total-revenue">
-                <p>Total Pendapatan: <strong id="totalRevenue">Rp 950.000</strong></p>
+                <p>Total Pendapatan: <strong id="totalRevenue">Rp 0</strong></p>
             </div>
 
             <!-- Tombol -->
@@ -311,8 +602,71 @@
         </div>
     </div>
 
+    <!-- Modal Tambah Kamar -->
+    <div class="modal" id="addRoomModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>➕ Tambah Kamar</h2>
+                <button class="btn-close" onclick="closeAddRoomModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newRoomNumber">Nomor Kamar *</label>
+                    <input type="text" id="newRoomNumber" placeholder="Contoh: E1" required>
+                </div>
+                <div class="form-group">
+                    <label for="newRoomName">Nama Kamar *</label>
+                    <input type="text" id="newRoomName" placeholder="Contoh: Kamar Enam" required>
+                </div>
+                <div class="form-group">
+                    <label for="newRoomPrice">Harga (Rp) *</label>
+                    <input type="number" id="newRoomPrice" placeholder="Contoh: 500000" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="newRoomOccupied" checked style="width: auto; margin-right: 8px;">
+                        Kamar sudah diisi
+                    </label>
+                </div>
+                <div class="form-group" id="newRoomResidentGroup" style="display: none;">
+                    <label for="newRoomResident">Nama Penghuni</label>
+                    <input type="text" id="newRoomResident" placeholder="Nama penghuni">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeAddRoomModal()">Batal</button>
+                <button class="btn btn-save" onclick="addNewRoom()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
     <script>
-        // Data awal
+        // ==========================================
+        // PERSIAPAN DATABASE
+        // ==========================================
+        /*
+         * Database Schema:
+         * {
+         *   id: number,
+         *   number: string,      // Nomor kamar (E1, F2, dst.)
+         *   name: string,        // Nama kamar
+         *   price: number,       // Harga sewa (dalam Rupiah)
+         *   occupied: boolean,   // Status: true = terisi, false = kosong
+         *   residentName: string // Nama penghuni (optional)
+         * }
+         *
+         * Jika ingin menggunakan backend database:
+         * - Gunakan API endpoint untuk CRUD operations
+         * - Ganti localStorage.setItem/getItem dengan fetch/axios
+         * - Implementasi: createRoom, updateRoom, deleteRoom
+         */
+
+        // ==========================================
+        // DATA AWAL
+        // ==========================================
         const initialRooms = [
             { id: 1, number: 'A1', name: 'Kamar Satu', price: 500000, occupied: true, residentName: '' },
             { id: 2, number: 'B2', name: 'Kamar Dua', price: 450000, occupied: true, residentName: '' },
@@ -321,13 +675,26 @@
             { id: 5, number: 'D3', name: 'Kamar Lima', price: 450000, occupied: false, residentName: '' }
         ];
 
-        // Load data dari localStorage atau gunakan data awal
+        // ==========================================
+        // STATE MANAGEMENT
+        // ==========================================
         let rooms = JSON.parse(localStorage.getItem('kosRooms')) || initialRooms;
+        let nextId = localStorage.getItem('kosNextId') || initialRooms.length + 1;
 
-        // Format rupiah
+        // ==========================================
+        // FORMAT HELPER FUNCTIONS
+        // ==========================================
         function formatRupiah(amount) {
             return 'Rp ' + amount.toLocaleString('id-ID');
         }
+
+        function generateId() {
+            return nextId++;
+        }
+
+        // ==========================================
+        // RENDER FUNCTIONS
+        // ==========================================
 
         // Render pembayaran (yang sudah bayar)
         function renderPayments() {
@@ -343,7 +710,7 @@
                 <div class="payment-item lunas">
                     <div>
                         <div class="room-name">${room.number} - ${room.name}</div>
-                        ${room.residentName ? `<div style="font-size: 0.9em; color: #555; margin-top: 4px;">👤 ${room.residentName}</div>` : ''}
+                        ${room.residentName ? `<div class="resident-name">👤 ${room.residentName}</div>` : ''}
                     </div>
                     <div style="text-align: right;">
                         <span class="room-amount">${formatRupiah(room.price)}</span>
@@ -368,13 +735,19 @@
                         </div>
                     </div>
                     <div class="checkbox-container" style="flex-direction: column; align-items: flex-end; gap: 10px;">
-                        <div style="width: 100%; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
-                            <label for="room-${room.id}" style="font-weight: 600; min-width: 60px;">Isi:</label>
+                        <div class="checkbox-row">
+                            <label for="room-${room.id}">Isi:</label>
                             <input type="checkbox" id="room-${room.id}" ${room.occupied ? 'checked' : ''} onchange="toggleRoom(${room.id})">
                         </div>
-                        <div style="width: 100%; display: flex; align-items: center; gap: 8px;">
-                            <label for="resident-${room.id}" style="font-weight: 600; min-width: 60px;">Nama:</label>
-                            <input type="text" id="resident-${room.id}" value="${room.residentName || ''}" placeholder="Nama penghuni" style="flex: 1; padding: 8px 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 14px; transition: border-color 0.2s;" oninput="updateResidentName(${room.id}, this.value)">
+                        <div class="input-row" id="resident-input-row-${room.id}" style="display: ${room.occupied ? 'flex' : 'none'}">
+                            <label for="resident-${room.id}">Nama:</label>
+                            <input type="text" id="resident-${room.id}" value="${room.residentName || ''}" placeholder="Nama penghuni" oninput="updateResidentName(${room.id}, this.value)">
+                            <button class="btn-remove-resident" onclick="removeResident(${room.id})" title="Hapus penghuni">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -407,14 +780,27 @@
             document.getElementById('totalRevenue').textContent = formatRupiah(total);
         }
 
+        // ==========================================
+        // INTERACTION FUNCTIONS
+        // ==========================================
+
         // Toggle status isi/kosong
         function toggleRoom(roomId) {
             const room = rooms.find(r => r.id === roomId);
             if (room) {
                 room.occupied = !room.occupied;
-                // Jika menjadi isi, set default residentName kosong jika belum ada
+
+                // Jika menjadi isi dan belum ada nama penghuni, tampilkan input
                 if (room.occupied && !room.residentName) {
                     room.residentName = '';
+                    setTimeout(() => {
+                        const inputRow = document.getElementById(`resident-input-row-${roomId}`);
+                        const residentInput = document.getElementById(`resident-${roomId}`);
+                        if (inputRow && residentInput) {
+                            inputRow.style.display = 'flex';
+                            residentInput.focus();
+                        }
+                    }, 50);
                 }
             }
         }
@@ -427,36 +813,152 @@
             }
         }
 
+        // Hapus penghuni (tapi tetap ruangan terisi)
+        function removeResident(roomId) {
+            const room = rooms.find(r => r.id === roomId);
+            if (room) {
+                if (room.residentName) {
+                    room.residentName = '';
+                    const residentInput = document.getElementById(`resident-${roomId}`);
+                    if (residentInput) {
+                        residentInput.value = '';
+                    }
+                    showToast('Penghuni berhasil dihapus', 'success');
+                }
+            }
+        }
+
+        // ==========================================
+        // MODAL FUNCTIONS
+        // ==========================================
+
+        // Tampilkan modal tambah kamar
+        function showAddRoomModal() {
+            document.getElementById('addRoomModal').classList.add('show');
+            document.getElementById('newRoomNumber').value = '';
+            document.getElementById('newRoomName').value = '';
+            document.getElementById('newRoomPrice').value = '';
+            document.getElementById('newRoomOccupied').checked = true;
+            document.getElementById('newRoomResident').value = '';
+            document.getElementById('newRoomResidentGroup').style.display = 'none';
+            document.getElementById('newRoomNumber').focus();
+        }
+
+        // Tutup modal
+        function closeAddRoomModal() {
+            document.getElementById('addRoomModal').classList.remove('show');
+        }
+
+        // Tampilkan/sembunyikan input nama penghuni di modal
+        document.getElementById('newRoomOccupied').addEventListener('change', function() {
+            document.getElementById('newRoomResidentGroup').style.display = this.checked ? 'block' : 'none';
+        });
+
+        // Tambah kamar baru
+        function addNewRoom() {
+            const number = document.getElementById('newRoomNumber').value.trim();
+            const name = document.getElementById('newRoomName').value.trim();
+            const price = parseInt(document.getElementById('newRoomPrice').value);
+            const occupied = document.getElementById('newRoomOccupied').checked;
+            const residentName = document.getElementById('newRoomResident').value.trim();
+
+            // Validasi
+            if (!number) {
+                showToast('Nomor kamar harus diisi!', 'error');
+                return;
+            }
+            if (!name) {
+                showToast('Nama kamar harus diisi!', 'error');
+                return;
+            }
+            if (isNaN(price) || price < 0) {
+                showToast('Harga tidak valid!', 'error');
+                return;
+            }
+
+            // Cek duplikasi nomor kamar
+            const duplicate = rooms.find(r => r.number.toLowerCase() === number.toLowerCase());
+            if (duplicate) {
+                showToast('Nomor kamar sudah ada!', 'error');
+                return;
+            }
+
+            // Tambah kamar baru
+            const newRoom = {
+                id: generateId(),
+                number: number,
+                name: name,
+                price: price,
+                occupied: occupied,
+                residentName: occupied ? residentName : ''
+            };
+
+            rooms.push(newRoom);
+            closeAddRoomModal();
+            saveData();
+            showToast('Kamar berhasil ditambahkan!', 'success');
+        }
+
+        // ==========================================
+        // DATA MANAGEMENT
+        // ==========================================
+
         // Simpan data
         function saveData() {
             localStorage.setItem('kosRooms', JSON.stringify(rooms));
+            localStorage.setItem('kosNextId', nextId);
             renderPayments();
             renderRooms();
             renderEmptyRooms();
             updateTotalRevenue();
 
-            // Tampilkan notifikasi sederhana
-            alert('✓ Data berhasil disimpan!');
+            // Tampilkan notifikasi
+            showToast('✓ Data berhasil disimpan!', 'success');
         }
 
         // Reset data
         function resetData() {
             if (confirm('Yakin ingin mereset semua data?')) {
                 localStorage.removeItem('kosRooms');
+                localStorage.removeItem('kosNextId');
                 rooms = JSON.parse(localStorage.getItem('kosRooms')) || initialRooms;
                 renderPayments();
                 renderRooms();
                 renderEmptyRooms();
                 updateTotalRevenue();
-                alert('✓ Data berhasil di-reset!');
+                showToast('✓ Data berhasil di-reset!', 'success');
             }
         }
 
-        // Render awal
+        // ==========================================
+        // TOAST NOTIFICATION
+        // ==========================================
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ==========================================
+        // INITIAL RENDER
+        // ==========================================
         renderPayments();
         renderRooms();
         renderEmptyRooms();
         updateTotalRevenue();
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('addRoomModal');
+            if (event.target == modal) {
+                closeAddRoomModal();
+            }
+        }
     </script>
 </body>
 </html>
