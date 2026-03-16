@@ -189,7 +189,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 10px;
+            gap: 8px;
         }
 
         .checkbox-row {
@@ -255,6 +255,23 @@
         .btn-remove-resident:hover {
             background: #c82333;
             transform: scale(1.1);
+        }
+
+        .btn-edit {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit:hover {
+            background: #138496;
+            transform: translateY(-2px);
         }
 
         .empty-rooms {
@@ -424,6 +441,11 @@
             border-color: #dc3545;
         }
 
+        .modal-body .form-group input:disabled {
+            background: #f0f0f0;
+            cursor: not-allowed;
+        }
+
         .modal-footer {
             display: flex;
             gap: 10px;
@@ -512,9 +534,7 @@
                 justify-content: center;
             }
 
-            .payment-item,
-            .room-card,
-            .empty-room {
+            .room-card {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
@@ -543,6 +563,11 @@
 
             .modal-content {
                 padding: 20px;
+            }
+
+            .btn-edit {
+                width: 100%;
+                margin-bottom: 8px;
             }
         }
     </style>
@@ -628,6 +653,48 @@
         </div>
     </div>
 
+    <!-- Modal Edit Kamar -->
+    <div class="modal" id="editRoomModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Edit Kamar</h2>
+                <button class="btn-close" onclick="closeEditRoomModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editRoomId">ID Kamar</label>
+                    <input type="text" id="editRoomId" disabled style="background: #f0f0f0;">
+                </div>
+                <div class="form-group">
+                    <label for="editRoomNumber">Nomor Kamar *</label>
+                    <input type="text" id="editRoomNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="editRoomName">Nama Kamar *</label>
+                    <input type="text" id="editRoomName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editRoomPrice">Harga (Rp) *</label>
+                    <input type="number" id="editRoomPrice" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="editRoomOccupied" style="width: auto; margin-right: 8px;">
+                        Kamar sudah diisi
+                    </label>
+                </div>
+                <div class="form-group" id="editRoomResidentGroup" style="display: none;">
+                    <label for="editRoomResident">Nama Penghuni</label>
+                    <input type="text" id="editRoomResident" placeholder="Nama penghuni">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeEditRoomModal()">Batal</button>
+                <button class="btn btn-save" onclick="updateRoom()">Update</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
@@ -668,6 +735,7 @@
         // ==========================================
         let rooms = JSON.parse(localStorage.getItem('kosRooms')) || initialRooms;
         let nextId = localStorage.getItem('kosNextId') || initialRooms.length + 1;
+        let currentEditRoomId = null;
 
         // ==========================================
         // FORMAT HELPER FUNCTIONS
@@ -722,10 +790,15 @@
                             <p>${formatRupiah(room.price)}</p>
                         </div>
                     </div>
-                    <div class="checkbox-container" style="flex-direction: column; align-items: flex-end; gap: 10px;">
-                        <div class="checkbox-row">
-                            <label for="room-${room.id}">Isi:</label>
-                            <input type="checkbox" id="room-${room.id}" ${room.occupied ? 'checked' : ''} onchange="toggleRoom(${room.id})">
+                    <div class="checkbox-container" style="flex-direction: column; align-items: flex-end; gap: 8px;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button class="btn-edit" onclick="showEditRoomModal(${room.id})" style="padding: 6px 12px; font-size: 0.85em;">
+                                ✏️ Edit
+                            </button>
+                            <div class="checkbox-row">
+                                <label for="room-${room.id}">Isi:</label>
+                                <input type="checkbox" id="room-${room.id}" ${room.occupied ? 'checked' : ''} onchange="toggleRoom(${room.id})">
+                            </div>
                         </div>
                         <div class="input-row" id="resident-input-row-${room.id}" style="display: ${room.occupied ? 'flex' : 'none'}">
                             <label for="resident-${room.id}">Nama:</label>
@@ -761,10 +834,15 @@
                             <p>${formatRupiah(room.price)}</p>
                         </div>
                     </div>
-                    <div class="checkbox-container" style="flex-direction: column; align-items: flex-end; gap: 10px;">
-                        <div class="checkbox-row">
-                            <label for="room-${room.id}">Isi:</label>
-                            <input type="checkbox" id="room-${room.id}" ${room.occupied ? 'checked' : ''} onchange="toggleRoom(${room.id})">
+                    <div class="checkbox-container" style="flex-direction: column; align-items: flex-end; gap: 8px;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button class="btn-edit" onclick="showEditRoomModal(${room.id})" style="padding: 6px 12px; font-size: 0.85em;">
+                                ✏️ Edit
+                            </button>
+                            <div class="checkbox-row">
+                                <label for="room-${room.id}">Isi:</label>
+                                <input type="checkbox" id="room-${room.id}" ${room.occupied ? 'checked' : ''} onchange="toggleRoom(${room.id})">
+                            </div>
                         </div>
                         <div class="input-row" id="resident-input-row-${room.id}" style="display: ${room.occupied ? 'flex' : 'none'}">
                             <label for="resident-${room.id}">Nama:</label>
@@ -838,7 +916,7 @@
         }
 
         // ==========================================
-        // MODAL FUNCTIONS
+        // MODAL FUNCTIONS (ADD ROOM)
         // ==========================================
 
         // Tampilkan modal tambah kamar
@@ -853,12 +931,12 @@
             document.getElementById('newRoomNumber').focus();
         }
 
-        // Tutup modal
+        // Tutup modal tambah kamar
         function closeAddRoomModal() {
             document.getElementById('addRoomModal').classList.remove('show');
         }
 
-        // Tampilkan/sembunyikan input nama penghuni di modal
+        // Tampilkan/sembunyikan input nama penghuni di modal tambah
         document.getElementById('newRoomOccupied').addEventListener('change', function() {
             document.getElementById('newRoomResidentGroup').style.display = this.checked ? 'block' : 'none';
         });
@@ -906,6 +984,84 @@
             closeAddRoomModal();
             saveData();
             showToast('Kamar berhasil ditambahkan!', 'success');
+        }
+
+        // ==========================================
+        // MODAL FUNCTIONS (EDIT ROOM)
+        // ==========================================
+
+        // Tampilkan modal edit kamar
+        function showEditRoomModal(roomId) {
+            const room = rooms.find(r => r.id === roomId);
+            if (!room) return;
+
+            currentEditRoomId = roomId;
+
+            document.getElementById('editRoomId').value = room.id;
+            document.getElementById('editRoomNumber').value = room.number;
+            document.getElementById('editRoomName').value = room.name;
+            document.getElementById('editRoomPrice').value = room.price;
+            document.getElementById('editRoomOccupied').checked = room.occupied;
+            document.getElementById('editRoomResident').value = room.residentName || '';
+            document.getElementById('editRoomResidentGroup').style.display = room.occupied ? 'block' : 'none';
+
+            document.getElementById('editRoomModal').classList.add('show');
+        }
+
+        // Tutup modal edit kamar
+        function closeEditRoomModal() {
+            document.getElementById('editRoomModal').classList.remove('show');
+            currentEditRoomId = null;
+        }
+
+        // Tampilkan/sembunyikan input nama penghuni di modal edit
+        document.getElementById('editRoomOccupied').addEventListener('change', function() {
+            document.getElementById('editRoomResidentGroup').style.display = this.checked ? 'block' : 'none';
+        });
+
+        // Update kamar
+        function updateRoom() {
+            const roomId = parseInt(document.getElementById('editRoomId').value);
+            const room = rooms.find(r => r.id === roomId);
+            if (!room) return;
+
+            const number = document.getElementById('editRoomNumber').value.trim();
+            const name = document.getElementById('editRoomName').value.trim();
+            const price = parseInt(document.getElementById('editRoomPrice').value);
+            const occupied = document.getElementById('editRoomOccupied').checked;
+            const residentName = document.getElementById('editRoomResident').value.trim();
+
+            // Validasi
+            if (!number) {
+                showToast('Nomor kamar harus diisi!', 'error');
+                return;
+            }
+            if (!name) {
+                showToast('Nama kamar harus diisi!', 'error');
+                return;
+            }
+            if (isNaN(price) || price < 0) {
+                showToast('Harga tidak valid!', 'error');
+                return;
+            }
+
+            // Cek duplikasi nomor kamar (kecuali kamar yang sedang diedit)
+            const duplicate = rooms.find(r => r.number.toLowerCase() === number.toLowerCase() && r.id !== roomId);
+            if (duplicate) {
+                showToast('Nomor kamar sudah ada!', 'error');
+                return;
+            }
+
+            // Update kamar
+            room.number = number;
+            room.name = name;
+            room.price = price;
+            room.occupied = occupied;
+            room.residentName = occupied ? residentName : '';
+
+            closeEditRoomModal();
+            saveData();
+            showToast('Kamar berhasil diupdate!', 'success');
         }
 
         // ==========================================
@@ -963,9 +1119,13 @@
 
         // Close modal when clicking outside
         window.onclick = function(event) {
-            const modal = document.getElementById('addRoomModal');
-            if (event.target == modal) {
+            const addModal = document.getElementById('addRoomModal');
+            const editModal = document.getElementById('editRoomModal');
+            if (event.target == addModal) {
                 closeAddRoomModal();
+            }
+            if (event.target == editModal) {
+                closeEditRoomModal();
             }
         }
     </script>
